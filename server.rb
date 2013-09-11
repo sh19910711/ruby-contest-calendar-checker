@@ -23,6 +23,7 @@ def test_set_data_to_hatena_group_calendar(group_id, date, data)
   # 追加済みのデータがあるときは何もしない
   target_url = "https://#{group_id}.g.hatena.ne.jp/keyword/#{date.strftime("%Y-%m-%d")}?mode=edit"
   agent.get(target_url).form_with(:name => 'edit') do |form|
+    next unless form
     break if form["body"].include?(data)
     form["body"] += data
     form.submit
@@ -63,7 +64,9 @@ def get_unique_contest_list(contest_list)
     ok      = true
     date_i  = contest_list[i]["date"]
     title_i = contest_list[i]["title"]
-    next if pass_list.key?(/(.*)\(Div.\s?[12]\)/.match(title_i)[1].strip)
+    if /(.*)\(Div.\s?[12]\)/.match(title_i) && pass_list.key?(/(.*)\(Div.\s?[12]\)/.match(title_i)[1].strip)
+      next
+    end
     ((i+1)..(len-1)).each do |j|
       date_j  = contest_list[j]["date"]
       title_j = contest_list[j]["title"]
@@ -97,7 +100,7 @@ def find_new_contest()
 end
 
 class App < Sinatra::Base
-  post '/' + CHECK_CF_CONTEST_SECRET_URL do
+  post "/#{CHECK_CF_CONTEST_SECRET_URL}" do
     halt 403 if CHECK_CF_CONTEST_SECRET_TOKEN != params[:token]
     find_new_contest()
     'OK'
