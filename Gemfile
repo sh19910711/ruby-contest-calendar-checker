@@ -13,5 +13,10 @@ group :test do
   gem 'rspec'
   gem 'rack-test', require: 'rack/test'
   gem 'webmock'
+
+  gem 'spork'
+  gem 'simplecov', require: false
+  gem 'simplecov-rcov'
+  gem 'ci_reporter'
 end
 
