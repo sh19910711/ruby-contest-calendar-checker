@@ -45,9 +45,15 @@ def test_get_contest_list_from_codeforces()
     contest          = {}
     contest["title"] = elements[0].inner_text.strip
     str_date         = elements[1].inner_text.strip
-    date             = DateTime.strptime(str_date, "%m/%d/%Y %H:%M")
-    date += Rational(12, 24) if /PM$/.match(str_date)
-    date += Rational(5, 24)
+    date             = DateTime.strptime("#{str_date}", "%m/%d/%Y %H:%M")
+    date = date.new_offset(Rational(4, 24))
+    date -= Rational(4, 24)
+    if /PM$/.match(str_date)
+      if ( date.hour != 12 )
+        date += Rational(12, 24)
+      end
+    end
+    date = date.new_offset(Rational(9, 24))
     contest["date"] = date
 
     contest_list.push(contest)
