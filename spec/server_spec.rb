@@ -158,5 +158,26 @@ describe 'T002: Codeforces Parsing Test' do
     end
   end
 
+  describe 'T002_004: Get Contest List(Running)' do
+    # Fake Codeforces Contests
+    before do
+      response_body = File.read(File.dirname(__FILE__) + "/mock/codeforces_com_contests_running.html")
+      stub_request(:get, 'http://codeforces.com/contests?locale=en').to_return({
+        :status => 200,
+        :headers => {
+          'Content-Type' => 'text/html',
+        },
+        :body => response_body,
+      })
+    end
+
+    it 'T002_004_001: Get Contest List' do
+      ret = test_get_contest_list_from_codeforces()
+      ret[0]["title"].should eq "Codeforces Round #200 (Div. 1)"
+      no_dup = get_unique_contest_list(ret)
+      no_dup[0]["title"].should eq "Codeforces Round #200"
+    end
+  end
+
 end
 
