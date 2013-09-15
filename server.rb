@@ -43,6 +43,7 @@ def test_get_contest_list_from_codeforces()
     elements         = entry.search('td')
     # 時差は5時間
     contest          = {}
+    elements[0].search("*").remove()
     contest["title"] = elements[0].inner_text.strip
     str_date         = elements[1].inner_text.strip
     date             = DateTime.strptime("#{str_date}", "%m/%d/%Y %H:%M")
