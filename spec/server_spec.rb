@@ -18,6 +18,18 @@ describe 'T001: Routing Test' do
     })
   end
 
+  # Fake Codechef Contests
+  before do
+    response_body = File.read(File.dirname(__FILE__) + "/mock/codechef_contest.html")
+    stub_request(:get, 'http://www.codechef.com/contests').to_return({
+      :status => 200,
+      :headers => {
+        'Content-Type' => 'text/html',
+      },
+      :body => response_body,
+    })
+  end
+
   # Fake Hatena Login
   before do
     stub_request(:get, 'https://www.hatena.ne.jp/login').to_return({
@@ -179,5 +191,33 @@ describe 'T002: Codeforces Parsing Test' do
     end
   end
 
+end
+
+describe 'T003: Codechef' do
+  include Rack::Test::Methods
+
+  def app
+    App.new
+  end
+
+  describe 'T003_001: Get Contest List' do
+    # Fake Codechef Contests
+    before do
+      response_body = File.read(File.dirname(__FILE__) + "/mock/codechef_contest.html")
+      stub_request(:get, 'http://www.codechef.com/contests').to_return({
+        :status => 200,
+        :headers => {
+          'Content-Type' => 'text/html',
+        },
+        :body => response_body,
+      })
+    end
+
+    it 'T003_001_001: Get Contest List' do
+      ret = test_get_contest_list_from_codechef()
+      ret.length.should eq 1
+      ret[0]["title"].should eq "September Cook-Off 2013"
+    end
+  end
 end
 
