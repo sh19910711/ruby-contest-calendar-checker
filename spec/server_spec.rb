@@ -30,6 +30,18 @@ describe 'T001: Routing Test' do
     })
   end
 
+  # Fake Codechef Contests
+  before do
+    response_body = File.read(File.dirname(__FILE__) + "/mock/uva_contest.html")
+    stub_request(:get, 'http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=12').to_return({
+      :status => 200,
+      :headers => {
+        'Content-Type' => 'text/html',
+      },
+      :body => response_body,
+    })
+  end
+
   # Fake Hatena Login
   before do
     stub_request(:get, 'https://www.hatena.ne.jp/login').to_return({
@@ -217,6 +229,25 @@ describe 'T003: Codechef' do
       ret = test_get_contest_list_from_codechef()
       ret.length.should eq 1
       ret[0]["title"].should eq "September Cook-Off 2013"
+    end
+  end
+end
+
+describe 'T004: UVa' do
+  include Rack::Test::Methods
+
+  def app
+    App.new
+  end
+
+  describe 'T004_001: Parsing Test' do
+    it 'T004_001_001: Get Contest List' do
+      ret = test_get_contest_list_from_uva()
+      ret.length.should eq 4
+      ret[0]["title"].should eq "The 9th Hunan Collegiate Programming Contest Semilive"
+      ret[1]["title"].should eq "Latin America Regional"
+      ret[2]["title"].should eq "An european regional"
+      ret[3]["title"].should eq "An asian regional"
     end
   end
 end
