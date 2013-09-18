@@ -69,7 +69,7 @@ def test_get_contest_list_from_codechef()
   contest_list_url = "http://www.codechef.com/contests"
   page             = agent.get(contest_list_url)
   doc              = Nokogiri::HTML(page.body)
-  table            = doc.xpath('//div[@id                                              = "primary-content"]//table')[0]
+  table            = doc.xpath('//div[@id = "primary-content"]//table')[0]
   contest_list     = []
 
   table.search('tr')[1..-1].each do |tr|
@@ -81,6 +81,33 @@ def test_get_contest_list_from_codechef()
     date = DateTime.strptime("#{start_time} IST", "%Y-%m-%d %H:%M:%s %z")
     date = date.new_offset(Rational(9, 24))
 
+    contest["title"] = title
+    contest["date"] = date
+    contest_list.push contest
+  end
+
+  contest_list
+end
+
+# Codeforcesのコンテストリストを取得する
+def test_get_contest_list_from_uva()
+  agent            = Mechanize.new
+  agent.user_agent = 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)'
+  contest_list_url = "http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=12"
+  page             = agent.get(contest_list_url)
+  doc              = Nokogiri::HTML(page.body)
+  table            = doc.xpath('//div[@id="main"]/div[@id="col3"]//table')[0]
+  contest_list     = []
+
+  table.search('tr')[1..-1].each do |tr|
+    elements = tr.search('td')
+    id = elements[0].text.strip
+    title = elements[2].text.strip
+    start_time = elements[3].text.strip
+    date = DateTime.strptime("#{start_time} UTC", "%Y-%m-%d %H:%M:%s %z")
+    date = date.new_offset(Rational(9, 24))
+
+    contest = {}
     contest["title"] = title
     contest["date"] = date
     contest_list.push contest
@@ -135,6 +162,17 @@ end
 
 def find_new_contest_from_codechef()
   contest_list = test_get_contest_list_from_codechef
+  contest_list = get_unique_contest_list(contest_list)
+  contest_list.each do |contest|
+    date     = contest["date"]
+    str_date = date.strftime("%H:%M")
+    title    = contest["title"]
+    test_set_data_to_hatena_group_calendar(CHECK_CF_CONTEST_HATENA_GROUP_ID, date, "* #{str_date} #{title}\n")
+  end
+end
+
+def find_new_contest_from_uva()
+  contest_list = test_get_contest_list_from_uva
   contest_list = get_unique_contest_list(contest_list)
   contest_list.each do |contest|
     date     = contest["date"]

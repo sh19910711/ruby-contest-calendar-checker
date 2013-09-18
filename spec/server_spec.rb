@@ -30,7 +30,7 @@ describe 'T001: Routing Test' do
     })
   end
 
-  # Fake Codechef Contests
+  # Fake UVa Contests
   before do
     response_body = File.read(File.dirname(__FILE__) + "/mock/uva_contest.html")
     stub_request(:get, 'http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=12').to_return({
@@ -238,6 +238,18 @@ describe 'T004: UVa' do
 
   def app
     App.new
+  end
+
+  # Fake UVa Contests
+  before do
+    response_body = File.read(File.dirname(__FILE__) + "/mock/uva_contest.html")
+    stub_request(:get, 'http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=12').to_return({
+      :status => 200,
+      :headers => {
+        'Content-Type' => 'text/html',
+      },
+      :body => response_body,
+    })
   end
 
   describe 'T004_001: Parsing Test' do
