@@ -62,6 +62,33 @@ def test_get_contest_list_from_codeforces()
   return contest_list
 end
 
+# Codeforcesのコンテストリストを取得する
+def test_get_contest_list_from_codechef()
+  agent            = Mechanize.new
+  agent.user_agent = 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)'
+  contest_list_url = "http://www.codechef.com/contests"
+  page             = agent.get(contest_list_url)
+  doc              = Nokogiri::HTML(page.body)
+  table            = doc.xpath('//div[@id                                              = "primary-content"]//table')[0]
+  contest_list     = []
+
+  table.search('tr')[1..-1].each do |tr|
+    contest = {}
+    elements = tr.search('td')
+    id = elements[0].text.strip
+    title = elements[1].search('a')[0].text.strip
+    start_time = elements[2].text.strip
+    date = DateTime.strptime("#{start_time} IST", "%Y-%m-%d %H:%M:%s %z")
+    date = date.new_offset(Rational(9, 24))
+
+    contest["title"] = title
+    contest["date"] = date
+    contest_list.push contest
+  end
+
+  contest_list
+end
+
 # 重複するコンテスト（Div.1 Div.2など）を一つにまとめる処理
 def get_unique_contest_list(contest_list)
   pass_list = Hash.new
@@ -95,8 +122,19 @@ def get_unique_contest_list(contest_list)
   res
 end
 
-def find_new_contest()
+def find_new_contest_from_codeforces()
   contest_list = test_get_contest_list_from_codeforces
+  contest_list = get_unique_contest_list(contest_list)
+  contest_list.each do |contest|
+    date     = contest["date"]
+    str_date = date.strftime("%H:%M")
+    title    = contest["title"]
+    test_set_data_to_hatena_group_calendar(CHECK_CF_CONTEST_HATENA_GROUP_ID, date, "* #{str_date} #{title}\n")
+  end
+end
+
+def find_new_contest_from_codechef()
+  contest_list = test_get_contest_list_from_codechef
   contest_list = get_unique_contest_list(contest_list)
   contest_list.each do |contest|
     date     = contest["date"]
@@ -109,7 +147,8 @@ end
 class App < Sinatra::Base
   post "/#{CHECK_CF_CONTEST_SECRET_URL}" do
     halt 403 if CHECK_CF_CONTEST_SECRET_TOKEN != params[:token]
-    find_new_contest()
+    find_new_contest_from_codeforces()
+    find_new_contest_from_codechef()
     'OK'
   end
 end
