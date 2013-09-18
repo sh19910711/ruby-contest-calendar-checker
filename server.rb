@@ -187,6 +187,7 @@ class App < Sinatra::Base
     halt 403 if CHECK_CF_CONTEST_SECRET_TOKEN != params[:token]
     find_new_contest_from_codeforces()
     find_new_contest_from_codechef()
+    find_new_contest_from_uva()
     'OK'
   end
 end
