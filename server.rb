@@ -198,6 +198,12 @@ class App < Sinatra::Base
     'OK'
   end
 
+  configure :production, :development do
+    puts CHECK_CF_CONTEST_HATENA_GROUP_ID
+    puts CHECK_CF_CONTEST_HATENA_USER_ID
+    puts CHECK_CF_CONTEST_SECRET_URL
+  end
+
   configure :development do
     puts "### DEVELOPMENT_MODE ###"
     get "/check" do
