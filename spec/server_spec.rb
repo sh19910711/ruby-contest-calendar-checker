@@ -228,7 +228,7 @@ describe 'T003: Codechef' do
     it 'T003_001_001: Get Contest List' do
       ret = test_get_contest_list_from_codechef()
       ret.length.should eq 1
-      ret[0]["title"].should eq "[Codechef] September Cook-Off 2013"
+      ret[0]["title"].should eq "September Cook-Off 2013"
     end
   end
 end
@@ -256,10 +256,80 @@ describe 'T004: UVa' do
     it 'T004_001_001: Get Contest List' do
       ret = test_get_contest_list_from_uva()
       ret.length.should eq 4
-      ret[0]["title"].should eq "[UVa] The 9th Hunan Collegiate Programming Contest Semilive"
-      ret[1]["title"].should eq "[UVa] Latin America Regional"
-      ret[2]["title"].should eq "[UVa] An european regional"
-      ret[3]["title"].should eq "[UVa] An asian regional"
+      ret[0]["title"].should eq "The 9th Hunan Collegiate Programming Contest Semilive"
+      ret[1]["title"].should eq "Latin America Regional"
+      ret[2]["title"].should eq "An european regional"
+      ret[3]["title"].should eq "An asian regional"
+    end
+  end
+end
+
+describe 'T005: get_contest_line' do
+  include Rack::Test::Methods
+  def app
+    App.new
+  end
+
+  describe '001: No tag cases' do
+    it '001' do
+      date = Time.new
+      date_text = date.strftime('%H:%M')
+      ret = get_contest_line(
+        {
+          "title" => "Hello",
+          "tag" => "Hello",
+          "date" => date
+        },
+      )
+      ret.should === "* #{date_text} Hello"
+    end
+    it '002' do
+      date = Time.new
+      date_text = date.strftime('%H:%M')
+      ret = get_contest_line(
+        {
+          "title" => "Fullo",
+          "tag" => "Hello",
+          "date" => date
+        },
+      )
+      ret.should === "* #{date_text} [Hello] Fullo"
+    end
+    it '003: check upper/lower cases' do
+      date = Time.new
+      date_text = date.strftime('%H:%M')
+      ret = get_contest_line(
+        {
+          "title" => "Hello",
+          "tag" => "hello",
+          "date" => date
+        },
+      )
+      ret.should === "* #{date_text} [hello] Hello"
+    end
+    it '004' do
+      date = Time.new
+      date_text = date.strftime('%H:%M')
+      ret = get_contest_line(
+        {
+          "title" => "Hello World",
+          "tag" => "Hello",
+          "date" => date
+        },
+      )
+      ret.should === "* #{date_text} Hello World"
+    end
+    it '005' do
+      date = Time.new
+      date_text = date.strftime('%H:%M')
+      ret = get_contest_line(
+        {
+          "title" => "Super Hello World",
+          "tag" => "Hello",
+          "date" => date
+        },
+      )
+      ret.should === "* #{date_text} Super Hello World"
     end
   end
 end

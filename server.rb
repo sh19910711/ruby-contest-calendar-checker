@@ -8,9 +8,22 @@ CHECK_CF_CONTEST_HATENA_GROUP_ID      = ENV['CHECK_CF_CONTEST_HATENA_GROUP_ID']
 CHECK_CF_CONTEST_SECRET_URL           = ENV['CHECK_CF_CONTEST_SECRET_URL']
 CHECK_CF_CONTEST_SECRET_TOKEN         = ENV['CHECK_CF_CONTEST_SECRET_TOKEN']
 
+def get_contest_line contest
+  date     = contest["date"]
+  str_date = date.strftime("%H:%M")
+  title    = contest["title"]
+  tag      = contest["tag"]
+  title.include?(tag) ?  "* #{str_date} #{title}" : "* #{str_date} [#{tag}] #{title}"
+end
+
 # 指定したはてなグループのカレンダーにテキストを追加する実験
 # 指定した日付にテキストを追加する
-def test_set_data_to_hatena_group_calendar(group_id, date, data)
+def test_set_data_to_hatena_group_calendar(group_id, contest)
+  date     = contest["date"]
+  str_date = date.strftime("%H:%M")
+  title    = contest["title"]
+  tag      = contest["tag"]
+  data     = "* #{str_date} #{title}"
   agent             = Mechanize.new
   agent.user_agent  = 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)'
   agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -24,8 +37,8 @@ def test_set_data_to_hatena_group_calendar(group_id, date, data)
   target_url = "https://#{group_id}.g.hatena.ne.jp/keyword/#{date.strftime("%Y-%m-%d")}?mode=edit"
   agent.get(target_url).form_with(:name => 'edit') do |form|
     next unless form
-    break if form["body"].include?(data)
-    form["body"] += data
+    break if form["body"].include?(title)
+    form["body"] += get_contest_line contest
     form.submit
   end
 end
@@ -56,7 +69,7 @@ def test_get_contest_list_from_codeforces()
     end
     date = date.new_offset(Rational(9, 24))
     contest["date"] = date
-
+    contest["tag"] = "Codeforces"
     contest_list.push(contest)
   end
   return contest_list
@@ -83,6 +96,7 @@ def test_get_contest_list_from_codechef()
 
     contest["title"] = title
     contest["date"] = date
+    contest["tag"] = "Codechef"
     contest_list.push contest
   end
 
@@ -110,6 +124,7 @@ def test_get_contest_list_from_uva()
     contest = {}
     contest["title"] = title
     contest["date"] = date
+    contest["tag"] = "UVa"
     contest_list.push contest
   end
 
@@ -156,7 +171,7 @@ def find_new_contest_from_codeforces()
     date     = contest["date"]
     str_date = date.strftime("%H:%M")
     title    = contest["title"]
-    test_set_data_to_hatena_group_calendar(CHECK_CF_CONTEST_HATENA_GROUP_ID, date, "* #{str_date} #{title}\n")
+    test_set_data_to_hatena_group_calendar(CHECK_CF_CONTEST_HATENA_GROUP_ID, contest)
   end
 end
 
@@ -167,7 +182,7 @@ def find_new_contest_from_codechef()
     date     = contest["date"]
     str_date = date.strftime("%H:%M")
     title    = contest["title"]
-    test_set_data_to_hatena_group_calendar(CHECK_CF_CONTEST_HATENA_GROUP_ID, date, "* #{str_date} #{title}\n")
+    test_set_data_to_hatena_group_calendar(CHECK_CF_CONTEST_HATENA_GROUP_ID, contest)
   end
 end
 
@@ -178,7 +193,7 @@ def find_new_contest_from_uva()
     date     = contest["date"]
     str_date = date.strftime("%H:%M")
     title    = contest["title"]
-    test_set_data_to_hatena_group_calendar(CHECK_CF_CONTEST_HATENA_GROUP_ID, date, "* #{str_date} #{title}\n")
+    test_set_data_to_hatena_group_calendar(CHECK_CF_CONTEST_HATENA_GROUP_ID, contest)
   end
 end
 
