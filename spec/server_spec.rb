@@ -228,7 +228,7 @@ describe 'T003: Codechef' do
     it 'T003_001_001: Get Contest List' do
       ret = test_get_contest_list_from_codechef()
       ret.length.should eq 1
-      ret[0]["title"].should eq "September Cook-Off 2013"
+      ret[0]["title"].should eq "[Codechef] September Cook-Off 2013"
     end
   end
 end
@@ -256,10 +256,10 @@ describe 'T004: UVa' do
     it 'T004_001_001: Get Contest List' do
       ret = test_get_contest_list_from_uva()
       ret.length.should eq 4
-      ret[0]["title"].should eq "The 9th Hunan Collegiate Programming Contest Semilive"
-      ret[1]["title"].should eq "Latin America Regional"
-      ret[2]["title"].should eq "An european regional"
-      ret[3]["title"].should eq "An asian regional"
+      ret[0]["title"].should eq "[UVa] The 9th Hunan Collegiate Programming Contest Semilive"
+      ret[1]["title"].should eq "[UVa] Latin America Regional"
+      ret[2]["title"].should eq "[UVa] An european regional"
+      ret[3]["title"].should eq "[UVa] An asian regional"
     end
   end
 end
