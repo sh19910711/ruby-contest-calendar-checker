@@ -38,7 +38,7 @@ def test_set_data_to_hatena_group_calendar(group_id, contest)
   agent.get(target_url).form_with(:name => 'edit') do |form|
     next unless form
     break if form["body"].include?(title)
-    form["body"] += get_contest_line contest
+    form["body"] += "\n" + get_contest_line(contest) + "\n"
     form.submit
   end
 end
@@ -152,7 +152,8 @@ def get_unique_contest_list(contest_list)
           contest_title = /(.*)\(Div.\s?[12]\)/.match(title_i)[1].strip
           res.push({
             "title" => contest_title,
-            "date"  => contest_list[i]["date"]
+            "date"  => contest_list[i]["date"],
+            "tag"   => contest_list[i]["tag"]
           })
           pass_list[contest_title] = true
           ok = false
@@ -168,9 +169,6 @@ def find_new_contest_from_codeforces()
   contest_list = test_get_contest_list_from_codeforces
   contest_list = get_unique_contest_list(contest_list)
   contest_list.each do |contest|
-    date     = contest["date"]
-    str_date = date.strftime("%H:%M")
-    title    = contest["title"]
     test_set_data_to_hatena_group_calendar(CHECK_CF_CONTEST_HATENA_GROUP_ID, contest)
   end
 end
@@ -179,9 +177,6 @@ def find_new_contest_from_codechef()
   contest_list = test_get_contest_list_from_codechef
   contest_list = get_unique_contest_list(contest_list)
   contest_list.each do |contest|
-    date     = contest["date"]
-    str_date = date.strftime("%H:%M")
-    title    = contest["title"]
     test_set_data_to_hatena_group_calendar(CHECK_CF_CONTEST_HATENA_GROUP_ID, contest)
   end
 end
@@ -190,9 +185,6 @@ def find_new_contest_from_uva()
   contest_list = test_get_contest_list_from_uva
   contest_list = get_unique_contest_list(contest_list)
   contest_list.each do |contest|
-    date     = contest["date"]
-    str_date = date.strftime("%H:%M")
-    title    = contest["title"]
     test_set_data_to_hatena_group_calendar(CHECK_CF_CONTEST_HATENA_GROUP_ID, contest)
   end
 end
@@ -204,6 +196,17 @@ class App < Sinatra::Base
     find_new_contest_from_codechef()
     find_new_contest_from_uva()
     'OK'
+  end
+
+  configure :development do
+    puts "### DEVELOPMENT_MODE ###"
+    get "/check" do
+      halt 403 unless ENV['DEVELOPMENT_MODE'] === 'TRUE'
+      find_new_contest_from_codeforces()
+      find_new_contest_from_codechef()
+      find_new_contest_from_uva()
+      'OK'
+    end
   end
 end
 
