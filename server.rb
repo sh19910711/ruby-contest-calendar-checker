@@ -96,7 +96,7 @@ def test_get_contest_list_from_codechef()
 
     contest["title"] = title
     contest["date"] = date
-    contest["tag"] = "Codechef"
+    contest["tag"] = "CodeChef"
     contest_list.push contest
   end
 
