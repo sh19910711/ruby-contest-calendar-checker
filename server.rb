@@ -116,7 +116,7 @@ def test_get_contest_list_from_uva()
   table.search('tr')[1..-1].each do |tr|
     elements = tr.search('td')
     id = elements[0].text.strip
-    title = elements[2].text.strip
+    title = elements[2].search('a').text.strip
     start_time = elements[3].text.strip
     date = DateTime.strptime("#{start_time} UTC", "%Y-%m-%d %H:%M:%s %z")
     date = date.new_offset(Rational(9, 24))
