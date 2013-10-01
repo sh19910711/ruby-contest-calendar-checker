@@ -1,7 +1,9 @@
 # coding: utf-8
 
 require 'spec_helper'
-require './server.rb'
+require 'server/app'
+
+include Server
 
 describe 'T001: Routing Test' do
   include Rack::Test::Methods
