@@ -8,6 +8,10 @@ group :production, :development do
   gem 'sinatra'
 end
 
+group :development do
+  gem 'shotgun'
+end
+
 group :test do
   gem 'rake'
   gem 'rspec'

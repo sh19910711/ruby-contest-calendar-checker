@@ -1,8 +1,15 @@
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
 # coding: utf-8
 require 'simplecov'
 require 'simplecov-rcov'
 require 'rubygems'
 require 'spork'
+
+def read_file_from_mock(path)
+  File.read(File.dirname(__FILE__) + path)
+end
 
 Spork.prefork do
   ENV['RACK_ENV']                              = 'test'
