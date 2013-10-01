@@ -7,6 +7,10 @@ require 'simplecov-rcov'
 require 'rubygems'
 require 'spork'
 
+def read_file_from_mock(path)
+  File.read(File.dirname(__FILE__) + path)
+end
+
 Spork.prefork do
   ENV['RACK_ENV']                              = 'test'
   ENV['CHECK_CF_CONTEST_HATENA_USER_ID']       = "user"
