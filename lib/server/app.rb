@@ -64,6 +64,7 @@ module Server
     find_new_contest_from_contest Contest::Codeforces
     find_new_contest_from_contest Contest::Codechef
     find_new_contest_from_contest Contest::Uva
+    find_new_contest_from_contest Contest::Toj
   end
 end
 
