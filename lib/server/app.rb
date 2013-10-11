@@ -29,6 +29,7 @@ module Server
   # 指定した日付にテキストを追加する
   def test_set_data_to_hatena_group_calendar(group_id, contest)
     date     = contest["date"]
+    return if date < DateTime.now
     str_date = date.strftime("%H:%M")
     title    = contest["title"]
     tag      = contest["tag"]
