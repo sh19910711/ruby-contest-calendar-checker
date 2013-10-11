@@ -42,6 +42,54 @@ describe 'T001: Routing Test' do
     })
   end
 
+  # Fake Codechef Contests
+  before do
+    response_body = read_file_from_mock("/mock/toj_contest.html")
+    stub_request(:get, 'http://acm.timus.ru/schedule.aspx').to_return({
+      :status => 200,
+      :headers => {
+        'Content-Type' => 'text/html',
+      },
+      :body => response_body,
+    })
+  end
+
+  # ID=166
+  before do
+    response_body = read_file_from_mock("/mock/toj_contest_166.html")
+    stub_request(:get, 'http://acm.timus.ru/contest.aspx?id=166').to_return({
+      :status => 200,
+      :headers => {
+        'Content-Type' => 'text/html',
+      },
+      :body => response_body,
+    })
+  end
+
+  # ID=169
+  before do
+    response_body = read_file_from_mock("/mock/toj_contest_169.html")
+    stub_request(:get, 'http://acm.timus.ru/contest.aspx?id=169').to_return({
+      :status => 200,
+      :headers => {
+        'Content-Type' => 'text/html',
+      },
+      :body => response_body,
+    })
+  end
+
+  # ID=170
+  before do
+    response_body = read_file_from_mock("/mock/toj_contest_170.html")
+    stub_request(:get, 'http://acm.timus.ru/contest.aspx?id=170').to_return({
+      :status => 200,
+      :headers => {
+        'Content-Type' => 'text/html',
+      },
+      :body => response_body,
+    })
+  end
+
   # Fake Hatena Login
   before do
     stub_request(:get, 'https://www.hatena.ne.jp/login').to_return({

@@ -1,6 +1,13 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
+ENV['RACK_ENV']                              = 'test'
+ENV['CHECK_CF_CONTEST_HATENA_USER_ID']       = "user"
+ENV['CHECK_CF_CONTEST_HATENA_USER_PASSWORD'] = "password"
+ENV['CHECK_CF_CONTEST_HATENA_GROUP_ID']      = "group"
+ENV['CHECK_CF_CONTEST_SECRET_URL']           = "test"
+ENV['CHECK_CF_CONTEST_SECRET_TOKEN']         = "test"
+
 # coding: utf-8
 require 'simplecov'
 require 'simplecov-rcov'
@@ -13,13 +20,6 @@ def read_file_from_mock(path)
 end
 
 Spork.prefork do
-  ENV['RACK_ENV']                              = 'test'
-  ENV['CHECK_CF_CONTEST_HATENA_USER_ID']       = "user"
-  ENV['CHECK_CF_CONTEST_HATENA_USER_PASSWORD'] = "password"
-  ENV['CHECK_CF_CONTEST_HATENA_GROUP_ID']      = "group"
-  ENV['CHECK_CF_CONTEST_SECRET_URL']           = "test"
-  ENV['CHECK_CF_CONTEST_SECRET_TOKEN']         = "test"
-
   require 'rack/test'
   require 'webmock/rspec'
   # WebMock.allow_net_connect!
