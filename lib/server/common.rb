@@ -2,6 +2,7 @@ require 'server/app'
 require 'server/contest/codeforces'
 require 'server/contest/uva'
 require 'server/contest/codechef'
+require 'server/contest/toj'
 
 module Server
   CHECK_CF_CONTEST_HATENA_USER_ID       = ENV['CHECK_CF_CONTEST_HATENA_USER_ID']
