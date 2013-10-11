@@ -35,6 +35,7 @@ module Server
         title            = doc.xpath('//h2[@class="title"]').text.strip
         start_text       = doc.text.match(/Contest starts at (.*?)\./)[1].gsub('Yekaterinburg time', '')
         date             = DateTime.parse(start_text)
+        date             = date.new_offset(Rational(9, 24))
 
         contest          = {}
         contest["title"] = title

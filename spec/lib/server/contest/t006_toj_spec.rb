@@ -56,8 +56,11 @@ module Server
           ret = Toj::get_contest_list()
           ret.length.should eq 3
           ret[0]["title"].should eq "Open Ural FU Championship 2013"
+          ret[0]["date"].should  eq DateTime.parse('2013-10-19T16:00JST')
           ret[1]["title"].should eq "NEERC 2013, Eastern subregional contest"
+          ret[1]["date"].should  eq DateTime.parse('2013-10-26T16:00JST')
           ret[2]["title"].should eq "Ural Regional School Programming Contest 2013"
+          ret[2]["date"].should  eq DateTime.parse('2013-11-09T16:00JST')
         end
       end
     end
