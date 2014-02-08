@@ -7,7 +7,7 @@ require 'date'
 module Server
   class App < Sinatra::Base
     get '/version' do
-      '20140203'
+      '20140208'
     end
 
     post "/#{CHECK_CF_CONTEST_SECRET_URL}" do
