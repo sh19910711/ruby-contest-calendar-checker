@@ -6,6 +6,10 @@ require 'date'
 
 module Server
   class App < Sinatra::Base
+    get '/version' do
+      '20140208'
+    end
+
     post "/#{CHECK_CF_CONTEST_SECRET_URL}" do
       halt 403 if CHECK_CF_CONTEST_SECRET_TOKEN != params[:token]
       Server::find_new_contest()
